@@ -1,10 +1,13 @@
 #include <AFMotor.h>
 #define qtr 8
 #define lim 9
+enum directions {
+  RIGHT,
+  LEFT
+};
 
-
-byte qtrPins[]={A8,A9,A10,A11,A12,A13,A14,A15};
-int qtrVal[]={0,0,0,0,0,0,0,0};
+const byte qtrPins[] = {A8, A9, A10, A11, A12, A13, A14, A15};
+int qtrVal[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 AF_DCMotor motorRight(2);
 AF_DCMotor motorLeft(1);
@@ -12,8 +15,8 @@ AF_DCMotor motorLeft(1);
 #define kd 0.013f
 
 
-const int baseRight=90;
-const int baseLeft=110;
+const int baseRight = 110;
+const int baseLeft = 100;
 
 int pos;
 int error;
@@ -23,14 +26,13 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   defineQtr();
-  motorRight.run(RELEASE);
-  motorLeft.run(RELEASE);
-
+  setMotors(baseRight, baseLeft);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
- turnRight();
- delay(1000);  
+  goOnLine();
+  travelRooms();
+  delay(10000);
+
 }
