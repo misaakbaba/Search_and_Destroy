@@ -1,6 +1,7 @@
 #include <AFMotor.h>
 #define qtr 8
 #define lim 9
+#define ldr 22
 
 byte qtrPins[] = {A8, A9, A10, A11, A12, A13, A14, A15};
 int qtrVal[] = {0, 0, 0, 0, 0, 0, 0, 0};

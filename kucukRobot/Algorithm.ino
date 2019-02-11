@@ -19,11 +19,20 @@ void travelRooms() {
   goOnLine();
 }
 
-
-void followLine() {
-  computePos();
-  error = pos - 3500;
-  int addSpeed = kp * error + kd * (error - lastError);
-  lastError = error;
-  setMotors(baseRight + addSpeed, baseLeft - addSpeed);
+void travelFirst() {
+  goStep(7);
+  turnLeft();
+  goToLine();
+  turnUntilLine(LEFT);
+  goOnLine();
+  delay(3000);
 }
+
+//
+//void followLine() {
+//  computePos();
+//  error = pos - 3500;
+//  int addSpeed = kp * error + kd * (error - lastError);
+//  lastError = error;
+//  setMotors(baseRight + addSpeed, baseLeft - addSpeed);
+//}

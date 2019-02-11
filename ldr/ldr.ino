@@ -1,4 +1,4 @@
-const int ldr = 7;
+const int ldr = 22;
 int duration1;
 int duration2;
 void setup() {
@@ -10,9 +10,13 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
+  int result = midValue(5);
+//  Serial.println(result);
+  delay(1000);
 
-
-  if (digitalRead(ldr) == 0) {
+}
+int calcLight() {
+  if (digitalRead(ldr) == 0) { // 0 ken ışık var demek
     while (digitalRead(ldr) == 0) {
       Serial.println("IŞIK VAR");
     }
@@ -35,6 +39,14 @@ void loop() {
 
 
   }
-  Serial.println(duration2 - duration1);
-  delay(1000);
+  return (duration2 - duration1);
+}
+
+int midValue(int times) {
+  int sum=0;
+  for (int i = 0; i < times; i++) {
+    sum += calcLight();
+  }
+  Serial.println(sum / 3);
+  return (sum / 3);
 }

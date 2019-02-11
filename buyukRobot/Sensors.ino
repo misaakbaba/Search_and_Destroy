@@ -19,4 +19,8 @@ void defineQtr(){
   Serial.println();
  }
 
+ void defineLdr(){
+  pinMode(ldr,INPUT);
+ }
+
  

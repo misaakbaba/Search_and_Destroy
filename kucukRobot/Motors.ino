@@ -19,7 +19,7 @@ void setMotors(int rightSpeed, int leftSpeed) {
 
 void turnLeft() {
   setMotors(baseRight, -baseLeft);
-  delay(700);
+  delay(600);
   setMotors(-baseRight, baseLeft);
   delay(20);
   setMotors(0, 0);
@@ -64,15 +64,15 @@ void goToLine() { // t görene kadar düz gitme
 
 void goOnLine() { // robotun t görene kadar follow line çalıştırma kodu
   while (true) {
-    Serial.println("çizgi izlicem");
-    followLine();
+    //    Serial.println("çizgi izlicem");
+    followLineV2();
     if (computeQtr() < 2) break; //t nin algılanma kodu
   }
   stopMotors();
   delay(2000);
 }
 
-void turnUntilLine(int choice) { //r ise sağa l ise soal dönüş
+void turnUntilLine(int choice) { //r ise sağa l ise sola dönüş
   setMotors(baseRight, baseLeft);
   delay(300);
 
