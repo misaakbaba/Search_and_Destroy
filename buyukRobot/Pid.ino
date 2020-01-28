@@ -1,41 +1,72 @@
-int prob[][lim] = {{0, 1, 1, 1, 1, 1, 1, 1, 2000}, {1, 1, 1, 1, 1, 1, 1, 0, 5000}
-  , {0, 0, 1, 1, 1, 1, 1, 1, 2500}, {1, 0, 0, 1, 1, 1, 1, 1, 2833}
-  , {1, 1, 0, 0, 1, 1, 1, 1, 3166}, {1, 1, 1, 0, 0, 1, 1, 1, 3500}
-  , {1, 1, 1, 1, 0, 0, 1, 1, 3833}
-  , {1, 1, 1, 1, 1, 0, 0, 1, 4166}, {1, 1, 1, 1, 1, 1, 0, 0, 4500}
-};
+
+// qtr dan gelen verilere göre hangi pozisyonda olduğunu gösteren dataset
 
 
-void followLine() {
-   computePos();
-   error=pos-3500;
-   int addSpeed=kp*error+kd*(error-lastError);
-   Serial.print("add SPeed: " );
-   Serial.println(addSpeed);
-   lastError=error;
-   setMotors(baseRight+addSpeed,baseLeft-addSpeed);
+PID myPID(&Input, &Output, &Setpoint, kp, ki, kd, DIRECT);
+PID encPID(&Input3, &Output3, &Setpoint3, kp3, ki3, kd3, DIRECT);
+
+void initPID() {
+  Setpoint = 0;
+  Input = 0;
+  myPID.SetOutputLimits(-255, 255);
+  myPID.SetMode(AUTOMATIC);
+}
+
+void initEncPID() {
+  Setpoint3 = 0;
+  Input3 = 0;
+  encPID.SetOutputLimits(-255, 255);
+  encPID.SetMode(AUTOMATIC);
 }
 
 
-int compareArrays(int * arr) {
-  int result;
-  for (int i = 0; i < 8; i++) {
-    if (qtrVal[i] != arr[i]) {
-      result = 0;
-      break;
-    } else {
-      result = arr[8];
-    }
-
-  }
-  return result;
+/*
+void followLineV2() {
+  pos = positionSensor(0);
+  positionLast = pos;
+  Input = pos;
+  myPID.Compute();
+  Serial.print("error is: ");
+  Serial.print(Input);
+  Serial.print("*** Output is: ");
+  Serial.println(Output);
+  setMotors(baseRight - Output, baseLeft + Output);
+  Serial.println(Output);
 }
 
-void computePos() {
-  readQtr();
-  for (int i = 0; i < 9; i++) {
-    if (compareArrays(prob[i]) != 0) {
-      pos = compareArrays(prob[i]);
-    }
-  }
+void followLineV3(){
+  computePos();
+  positionLast = pos;
+  Input = pos;
+  myPID.Compute();
+  Serial.print("error is: ");
+  Serial.print(Input);
+  Serial.print("*** Output is: ");
+  Serial.println(Output);
+  setMotors(baseRight + Output, baseLeft - Output);
+  Serial.println(Output);
+}
+*/
+void followLineV4() {
+  pos = getPosition();
+  positionLast = pos;
+  Input = pos;
+  myPID.Compute();
+//  Serial.print("error is: ");
+//  Serial.print(Input);
+//  Serial.print("*** Output is: ");
+//  Serial.println(Output);
+  setMotors(baseRight + Output, baseLeft - Output);
+//  Serial.println(Output);
+}
+
+
+void goForward() {
+  Input3 = encError();
+  encPID.Compute();
+  Serial.print("error is: ");
+  Serial.print(Input3);
+  Serial.print("*** Output is: ");
+  Serial.println(Output3);
+  setMotors(baseRight - Output3, baseLeft + Output3);
 }

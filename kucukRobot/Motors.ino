@@ -1,5 +1,5 @@
 
-void setMotors(int rightSpeed, int leftSpeed) {
+/*void setMotors(int rightSpeed, int leftSpeed) {
 
   if (leftSpeed < 0 || rightSpeed < 0) {
     if (leftSpeed < 0) {
@@ -15,28 +15,52 @@ void setMotors(int rightSpeed, int leftSpeed) {
 
   motorLeft.setSpeed(abs(leftSpeed));
   motorRight.setSpeed(abs(rightSpeed));
+  }*/
+
+void setMotors(int rightSpeed, int leftSpeed) {
+  if (rightSpeed > 0) {
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+  } else {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+  }
+
+  if (leftSpeed > 0) {
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+  } else {
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+  }
+
+  analogWrite(enA, abs(rightSpeed));
+  analogWrite(enB, abs(leftSpeed));
 }
 
+
 void turnLeft() {
-  setMotors(baseRight, -baseLeft);
-  delay(700);
-  setMotors(-baseRight, baseLeft);
-  delay(20);
+  goLeftStep(0.43);
+
+  setMotors(-baseRight / 2, baseLeft / 2);
+  delay(100);
   setMotors(0, 0);
 }
 
 void turnRight() {
-  setMotors(-baseRight, baseLeft);
-  delay(700);
-  setMotors(baseRight, -baseLeft);
-  delay(20);
+  goRightStep(0.43);
+
+  setMotors(baseRight / 2, -baseLeft / 2);
+  delay(100);
   setMotors(0, 0);
 }
 
 void turnBack() {
-  setMotors(baseRight, -baseLeft);
-  delay(1400);
-  stopMotors();
+  goBackStep(0.96);
+
+  setMotors(baseRight / 2, -baseLeft / 2);
+  delay(100);
+  setMotors(0, 0);
 }
 
 void stopMotors() {
@@ -47,50 +71,50 @@ void stopMotors() {
   setMotors(0, 0);
 }
 
-void goForward(int distance) { //verilen delay e göre düz gitme kodu
-  setMotors(baseRight, baseLeft);
-  delay(distance);
-  stopMotors();
-}
+
 
 void goToLine() { // t görene kadar düz gitme
+  resetEncoders();
   while (true) {
-    setMotors(baseRight, baseLeft);
-    if (computeQtr() < 2) break;
+    goForward();
+    if (computeQtr() < 5) break;
   }
   stopMotors();
-  delay(2000);
 }
 
-void goOnLine() { // robotun t görene kadar follow line çalıştırma kodu
-  while (true) {
-    Serial.println("çizgi izlicem");
-    followLine();
-    if (computeQtr() < 2) break; //t nin algılanma kodu
+void goOnLine() { // robotun t görene kadar follow line çalıştırma kodu. Parametre olarak kaçıncı T de duracagını alıyor.
+  while (1) {
+    //    Serial.println("çizgi izlicem");
+    followLineV4();
+    if (computeQtr() < 5) break;
   }
   stopMotors();
-  delay(2000);
 }
 
-void turnUntilLine(int choice) { //r ise sağa l ise soal dönüş
-  setMotors(baseRight, baseLeft);
-  delay(300);
-
+void turnUntilLine(int choice) { //RIGHT ise sağa LEFT ise sola dönüş
+  goStep(0.15);
   if (choice == 0) { // sağ dönüş için
+
     while (true) {
+      setMotors(0, baseLeft);
       readQtr();
-      setMotors(-baseRight, baseLeft);
+      setMotors(0, baseLeft);
       if (qtrVal[3] == 0) {
-        stopMotors();
+        setMotors(0, -baseLeft);
+        delay(50);
+        setMotors(0, 0);
         break;
       }
     }
   } else if (choice == 1) { // sol dönüş için
+
     while (true) {
+      setMotors(baseRight, 0);
       readQtr();
-      setMotors(baseRight, -baseLeft);
       if (qtrVal[2] == 0) {
-        stopMotors();
+        setMotors(-baseRight, 0);
+        delay(50);
+        setMotors(0, 0);
         break;
       }
     }
